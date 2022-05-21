@@ -1,0 +1,138 @@
+{% extends "navbar.html"  %}
+{% block title %}Profile {% endblock title %}
+{% load static %}
+{% block script %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock script %}
+{% block body %}
+<section class="home-section">
+
+	<div class="user-profile">
+
+		<div class="user-profile-details">
+			{% for qset in queryset %}
+			<div class="user-img-div">
+				{% if qset.image %}
+				<img src="{{qset.image.url}}" alt="author" class="user-img">
+				{% else %}
+				<img src="/Data/default.jpeg" alt="author" class="user-img">
+				{% endif %}
+			</div>
+			<div class="user-main-details">
+				<div class="user-details">
+					<p class="user-name">{{qset.user}}</p>
+					<a href="{% url 'users:profile_update' qset.id %}"> <button class="profile-btn">Edit Profile</button> </a>
+				</div>
+				<div class="desc-details">
+					<p class="desc">
+						{{qset.about}}
+					</p>
+				</div>
+				<div class="follow">
+					<p class="followers"><span>Followers</span><span>{{qset.follow.followers}}</span></p>
+					<p class="following"><span>Following</span><span></span></p>
+				</div>
+			{% endfor %}
+			</div>
+			
+		</div>
+
+	</div>
+	
+	<div id="profile_tabs_bar">
+		<div>
+			<button class="profile_tab_btns tab_active" id="profile_tab_notes_btn">
+				Notes
+			</button>
+			
+		</div>
+		<div>
+			<button class="profile_tab_btns" id="profile_tab_videos_btn">
+				Courses
+			</button>
+			
+		</div>
+	</div>
+		<div id="notes" class="card-notes">
+			<div class="card-div">
+				{% for qset2 in queryset2.user.notes_set.all %}
+				<a  style="text-decoration: none; color:black"  href="{% url 'home:notes_paginated_view' qset2.title %}">
+			  <div class="card">
+				  {% if qset2.thumbnail %}
+				<img src="{{qset2.thumbnail.url}}" alt="" class="thumbnail">
+				  {% else %}
+				<img src="/Data/default_notes.jpeg" alt="" class="thumbnail">
+				  {% endif %}
+				<div class="card-body">
+					{% if qset2.author.profile.image %}
+				 	<img src="{{qset2.author.profile.image.url}}" alt="author" class="circle">
+					{% else %}
+					<img src="/Data/default.jpeg" alt="author" class="circle">
+					{% endif %}
+			   <div class="card-area">
+				  <h5 class="title" id="long">{{qset2.title}}<span class="hide">consectetur</span>.</h5>
+				  <p class="name">{{qset2.author}}</p>
+			   </div>
+				</a>
+			   </div>
+			   </div>
+			   {% endfor %}
+			</div>
+			
+		  </div>
+		  <div id="videos" class="card-videos hide">
+			<div class="card-div">
+				{% for qset3 in queryset2.user.course_set.all  %}
+				<a  style="text-decoration: none; color:black"  href="{% url 'home:course_paginated_view' qset3.course_title %}">
+			  <div class="card">
+				  {% if qset3.course_thumbnail %}
+				 <img src="{{qset3.course_thumbnail.url}}" alt="" class="thumbnail">
+				  {% else %}
+				  <img src="/Data/default_course.jpeg" alt="" class="thumbnail">
+				  {% endif %}
+				<div class="card-body">
+					{% if qset3.course_author.profile.image %}
+				 <img src="{{qset3.course_author.profile.image.url}}" alt="author" class="circle">
+					{% else %}
+				<img src="/Edutotop/Data/default.jpeg" alt="author" class="circle">
+					{% endif %}
+			   <div class="card-area">
+				  	<h5 class="title">{{qset3.course_title}}<span class="dot">...</span></h5> <p class="name">{{qset3.course_author}}</p>
+				  <p class="views-time">{{qset3.course_published_on}}</p> 
+			   </div>
+				</a>
+			   </div> 
+			   </div>
+			   	{% endfor %}	
+				</div>
+	  </div>
+</section>
+
+<script src="{% static 'js/profile.js' %}"></script>
+<script src="{% static 'js/tab.js' %}"></script>
+<script src="{% static 'js/script.js'%}"></script>
+
+	<script>
+		function toggle_menu() {
+			const menu = document.getElementById("menu_slot");
+			const pages = document.querySelector("body");
+			const menu_tab = document.querySelector("#menu_tab");
+
+			if (menu.style.display === "block") {
+				menu.style.display = "none";
+				pages.style.overflow = "auto";
+				menu_tab.innerHTML = `<button id="nav_right" class="tab" onclick="toggle_menu()">
+																<span class="material-icons">menu</span>
+												</button>`;
+
+			} else {
+				menu.style.display = "block";
+				pages.style.overflow = "hidden";
+				menu_tab.innerHTML = `<button id="nav_right" class="tab" onclick="toggle_menu()">
+																<span class="material-icons" style="color: #FFF;">close</span>
+												</button>`;
+
+			}
+		}
+	</script>
+{% endblock body %}
